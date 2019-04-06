@@ -5,29 +5,25 @@ using System.Web;
 
 namespace Cucumber.BLL
 {
-    public class NumberToWord
+    public class NumberToWord : INumberToWord
     {
-        double input;
 
         private readonly string[] Ones = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" };
         private readonly string[] Teens = { "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
         private readonly string[] Tens = { "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
 
-        public NumberToWord(double input)
-        {
-            this.input = input;
-        }
 
-        public string Get()
+        public string GetWords(double input)
         {
+
             if (input == 0) return "Zero";
 
             else
             {
-                var beforeDecimalPoint = (int)Math.Abs(Math.Truncate(this.input));
-                var afterDecimalPoint = (int)(Math.Round((Math.Abs(this.input) - beforeDecimalPoint), 2) * 100);
+                var beforeDecimalPoint = (int)Math.Abs(Math.Truncate(input));
+                var afterDecimalPoint = (int)(Math.Round((Math.Abs(input) - beforeDecimalPoint), 2) * 100);
 
-                var currency = $"{Process(beforeDecimalPoint)} Dollars{(afterDecimalPoint > 0 ? $" and {Process(afterDecimalPoint)} cents" : string.Empty)}";
+                var currency = $"{Get(beforeDecimalPoint)} Dollars{(afterDecimalPoint > 0 ? $" and {Get(afterDecimalPoint)} cents" : string.Empty)}";
 
                 return $"{((input < 0) ? "Negative " : null)}{currency}";
 
@@ -36,8 +32,7 @@ namespace Cucumber.BLL
 
         }
 
-
-        string Process(int input)
+        private string Get(int input)
         {
             var output = new List<string>();
 
@@ -55,24 +50,30 @@ namespace Cucumber.BLL
                 }
                 else if (input < 100)
                 {
-                    var _output = Tens[input / 10];
-                    output.Add($"{_output}{((input > 0) ? "-" : null)}");
+                    output.Add(Tens[input / 10].AddExtra(input));
                     input %= 10;
+
                 }
+
                 else if (input < 1000)
                 {
-                    output.Add($"{Process(input / 100)} Hundred and ");
+                    output.Add($"{Get(input / 100)} Hundred".AddExtra(input));
                     input %= 100;
+
                 }
-                else if (input > 1000)
+
+                else if (input < 1000000)
                 {
-                    output.Add($"{Process(input / 1000)} Thousand and ");
+                    output.Add($"{Get(input / 1000)} Thousand".AddExtra(input));
                     input %= 1000;
+
                 }
+
                 else if (input > 1000000)
                 {
-                    output.Add($"{Process(input / 1000000)} million and ");
+                    output.Add($"{Get(input / 1000000)} million".AddExtra(input));
                     input %= 1000000;
+
                 }
 
 
@@ -82,5 +83,14 @@ namespace Cucumber.BLL
 
         }
 
+
+
+    }
+
+    public static class Extensions
+    {
+
+        public static string AddExtra(this string output, int input) =>
+            string.Concat(output, (input < 100) ? "-" : " and ");
     }
 }

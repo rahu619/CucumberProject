@@ -9,6 +9,12 @@ namespace Cucumber.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly BLL.INumberToWord BLLObj;
+        public HomeController(BLL.INumberToWord BLLObj)
+        {
+            this.BLLObj = BLLObj;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -32,14 +38,11 @@ namespace Cucumber.Controllers
         public JsonResult ProcessInput(InputModel model)
         {
             var outputObj = new OutputModel();
-            outputObj.Name = string.Concat(model.FirstName, model.LastName);
+            outputObj.Name = $"{model.FirstName} {model.LastName}"; //FirstName LastName
 
             double amount;
             if (double.TryParse(model.Currency, out amount))
-            {
-                outputObj.CurrencyDescription = new BLL.NumberToWord(amount).Get();
-
-            }
+                outputObj.CurrencyDescription = BLLObj.GetWords(amount);
 
 
             return Json(outputObj);
