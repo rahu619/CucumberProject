@@ -32,6 +32,12 @@ namespace Cucumber.BLL
 
         }
 
+
+        /// <summary>
+        /// Converts numerical data to words
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private string Get(int input)
         {
             var output = new List<string>();
@@ -52,29 +58,32 @@ namespace Cucumber.BLL
                 {
                     output.Add(Tens[input / 10].AddExtra(input));
                     input %= 10;
-
                 }
 
                 else if (input < 1000)
                 {
                     output.Add($"{Get(input / 100)} Hundred".AddExtra(input));
                     input %= 100;
-
                 }
 
                 else if (input < 1000000)
                 {
                     output.Add($"{Get(input / 1000)} Thousand".AddExtra(input));
                     input %= 1000;
-
                 }
 
-                else if (input > 1000000)
+                else if (input < 1000000000)
                 {
-                    output.Add($"{Get(input / 1000000)} million".AddExtra(input));
+                    output.Add($"{Get(input / 1000000)} Million".AddExtra(input));
                     input %= 1000000;
-
                 }
+
+                else if (input >= 1000000000)
+                {
+                    output.Add($"{Get(input / 1000000000)} Billion".AddExtra(input));
+                    input %= 1000000000;
+                }
+
 
 
             }
@@ -87,10 +96,13 @@ namespace Cucumber.BLL
 
     }
 
+    /// <summary>
+    /// Adds non-alphanumerical values to the currency words
+    /// </summary>
     public static class Extensions
     {
 
         public static string AddExtra(this string output, int input) =>
-            string.Concat(output, (input < 100) ? "-" : " and ");
+            (input % 10 == 0) ? output : string.Concat(output, (input < 100) ? "-" : " and ");
     }
 }

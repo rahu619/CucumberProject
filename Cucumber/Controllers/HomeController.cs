@@ -20,21 +20,25 @@ namespace Cucumber.Controllers
             return View();
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
+        //public ActionResult About()
+        //{
+        //    ViewBag.Message = "Your application description page.";
 
-            return View();
-        }
+        //    return View();
+        //}
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+        //public ActionResult Contact()
+        //{
+        //    ViewBag.Message = "Your contact page.";
 
-            return View();
-        }
+        //    return View();
+        //}
 
-
+        /// <summary>
+        /// Process input model and returns a json
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public JsonResult ProcessInput(InputModel model)
         {
             var outputObj = new OutputModel();
