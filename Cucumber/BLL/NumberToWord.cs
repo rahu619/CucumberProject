@@ -20,8 +20,8 @@ namespace Cucumber.BLL
 
             else
             {
-                var beforeDecimalPoint = (int)Math.Abs(Math.Truncate(input));
-                var afterDecimalPoint = (int)(Math.Round((Math.Abs(input) - beforeDecimalPoint), 2) * 100);
+                var beforeDecimalPoint = (Int64)Math.Abs(Math.Truncate(input));
+                var afterDecimalPoint = (Int64)(Math.Round((Math.Abs(input) - beforeDecimalPoint), 2) * 100);
 
                 var currency = $"{Get(beforeDecimalPoint)} Dollars{(afterDecimalPoint > 0 ? $" and {Get(afterDecimalPoint)} cents" : string.Empty)}";
 
@@ -38,7 +38,7 @@ namespace Cucumber.BLL
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        private string Get(int input)
+        private string Get(long input)
         {
             var output = new List<string>();
 
@@ -101,7 +101,7 @@ namespace Cucumber.BLL
     public static class Extensions
     {
 
-        public static string AddExtra(this string output, int input) =>
+        public static string AddExtra(this string output, long input) =>
             (input % 10 == 0) ? output : string.Concat(output, (input < 100) ? "-" : " and ");
     }
 }
