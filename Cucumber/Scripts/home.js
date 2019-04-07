@@ -54,7 +54,7 @@
     });
 
 
-    //validation messages
+    //custom validation messages
     $("#txtFirstName").attr("oninvalid", "this.setCustomValidity('Please enter a valid name')");
     $("#txtCurrency").attr("oninvalid", "this.setCustomValidity('Please enter a valid currency')");
 
