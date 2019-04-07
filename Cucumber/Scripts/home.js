@@ -1,6 +1,5 @@
 ﻿$(function () {
 
-
     $("#inputForm").submit(function (e) {
         e.preventDefault();
 
@@ -19,20 +18,30 @@
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(inputModel),
+            //beforeSend: function () { $('#loading').show(); },
+            //complete: function () { $('#loading').hide(); },
             success: function (data) {
                 console.log("response", data);
 
                 $('#outputModal').modal('show');
 
-                //$('.modal-title').html(data.Name);
                 $('div.modal-body label.text-info').text(data.Name);
                 $('div.modal-body p.text-success').text(data.CurrencyDescription);
             },
-            error: function (textStatus, errorThrown) {
-                $('.alert').alert();
+            error: function (response, textStatus, xhr) {
+                console.log(response.responseText, textStatus, xhr);
+
+                $('#statusDiv b').text(response.responseText);
+                $('#statusDiv').show();
+
             }
         });
 
+
+    });
+
+    $(document).click(function () {
+        $('#statusDiv').hide();
 
     });
 
@@ -45,6 +54,13 @@
     });
 
 
+    //validation messages
+    $("#txtFirstName").attr("oninvalid", "this.setCustomValidity('Please enter a valid name')");
+    $("#txtCurrency").attr("oninvalid", "this.setCustomValidity('Please enter a valid currency')");
+
+
+    $("input[required]").attr("oninput", "setCustomValidity('')");
 });
+
 
 

@@ -1,7 +1,9 @@
 ﻿using Cucumber.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -20,22 +22,8 @@ namespace Cucumber.Controllers
             return View();
         }
 
-        //public ActionResult About()
-        //{
-        //    ViewBag.Message = "Your application description page.";
-
-        //    return View();
-        //}
-
-        //public ActionResult Contact()
-        //{
-        //    ViewBag.Message = "Your contact page.";
-
-        //    return View();
-        //}
-
         /// <summary>
-        /// Process input model and returns a json
+        /// Process input model and returns it as json model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -45,11 +33,24 @@ namespace Cucumber.Controllers
             outputObj.Name = $"{model.FirstName} {model.LastName}"; //FirstName LastName
 
             double amount;
-            if (double.TryParse(model.Currency, out amount))
-                outputObj.CurrencyDescription = BLLObj.GetWords(amount);
+            if (!double.TryParse(model.Currency, out amount))
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError; //Not valid amount
+                return Json("Not a valid currency value");
+            }
 
+
+            outputObj.CurrencyDescription = BLLObj.GetWords(amount);
+            //Debug.WriteLine(DateTime.Now);
 
             return Json(outputObj);
+        }
+
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
         }
     }
 }
